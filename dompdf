@@ -1,0 +1,48 @@
+
+
+///// This DOMPDF Package is used to Retrive Data's from DB and showcase it as a PDF /////
+
+Step : 1  Install the Package Via Composer
+
+          composer require barryvdh/laravel-dompdf
+
+Step : 2  Update config/app.php
+
+          Add the following line to ‘providers’ array:
+
+            'providers' => [
+            ....
+            Barryvdh\DomPDF\ServiceProvider::class,
+            ],
+
+          Now add this line to ‘aliases’:
+
+            'aliases' => [
+            ....
+            'PDF' => Barryvdh\DomPDF\Facade::class,
+            ]
+
+Step : 3  Run php artisan config:cache in terminal
+
+Step : 4  Update the Route
+
+          Route::get('/categories', 'CategoryController@Category')->name('categories');
+
+Step : 5  InCategory Controller Pass the get values to loadView Function
+
+            public function Category()
+            {
+            $Cats = $this->category->get();
+            $pdf = app('dompdf.wrapper');
+            $pdf = PDF::loadView('pdf.rental_pdf_view', compact('Cats'));
+            $pdf->setPaper('A4', 'landscape');
+
+            ///// View that pdf file /////
+
+            return $pdf->stream('Cats.pdf');
+
+            ///// If you need to download the file  /////
+
+            return $pdf->download('Cats.pdf');
+
+            }
